@@ -8,6 +8,12 @@ import responseRoutes from './routes/responses';
 import importRoutes from './routes/import';
 import { errorHandler } from './middleware/errorHandler';
 import { AddressInfo } from 'net';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -37,25 +43,41 @@ app.get('/api/health', (req, res) => {
 app.use(errorHandler);
 
 // Graceful shutdown
-process.on('SIGINT', async () => {
+const cleanup = async () => {
   console.log('Shutting down gracefully...');
+  try {
+    const tmpDir = path.resolve(__dirname, '..', '.tmp');
+    await fs.rm(tmpDir, { recursive: true, force: true });
+    console.log('Cleanup successful.');
+  } catch (error) {
+    console.error('Error during cleanup:', error);
+  }
   await prisma.$disconnect();
   process.exit(0);
-});
+};
 
-process.on('SIGTERM', async () => {
-  console.log('Shutting down gracefully...');
-  await prisma.$disconnect();
-  process.exit(0);
-});
+process.on('SIGINT', cleanup);
+process.on('SIGTERM', cleanup);
 
 // Start server with dynamic port fallback
 const DEFAULT_PORT = parseInt(process.env.PORT || '3001', 10);
 const server = app.listen(DEFAULT_PORT);
-server.on('listening', () => {
+
+server.on('listening', async () => {
   const { port } = server.address() as AddressInfo;
   console.log(`Server running on port ${port}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+
+  // Write port to a file for the frontend to read
+  try {
+    const tmpDir = path.resolve(__dirname, '..', '.tmp');
+    await fs.mkdir(tmpDir, { recursive: true });
+    await fs.writeFile(path.join(tmpDir, '.port'), port.toString());
+    console.log(`Port ${port} written to ${path.join(tmpDir, '.port')}`);
+  } catch (error) {
+    console.error('Failed to write port file:', error);
+    process.exit(1);
+  }
 });
 server.on('error', (err: any) => {
   if ((err as any).code === 'EADDRINUSE') {

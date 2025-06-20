@@ -27,58 +27,58 @@ A full-stack application for managing job applications with a React frontend and
 
 ## Getting Started
 
+This project is configured to run with a single command, which handles everything from installing dependencies to starting the servers.
+
 ### Prerequisites
-- Node.js (v18 or higher)
-- Docker and Docker Compose
-- npm
 
-### 1. Clone & Install
+- **Node.js**: v18 or higher
+- **Docker**: Docker and Docker Compose must be installed and running.
+- **npm**: Included with Node.js.
 
-First, clone the repository and install all dependencies for both the frontend and backend with a single command from the project root.
+### 1. Clone the Repository
+
+First, clone the repository to your local machine:
 
 ```bash
 git clone <repository-url>
 cd <repository-folder>
-npm install && (cd server && npm install)
 ```
 
-### 2. Configure Environment
+### 2. Configure the Environment
 
-Next, create the environment file for the server and ensure it has the correct database connection string.
+Next, create the environment file for the server. This only needs to be done once.
 
 ```bash
-# From the project root
+# From the project root, navigate to the server directory
 cd server
+
+# Copy the example environment file
 cp .env.example .env
 ```
 
-Open the newly created `server/.env` file and make sure the `DATABASE_URL` is exactly as follows:
+Open the newly created `server/.env` file and ensure the `DATABASE_URL` is set correctly:
 
 ```env
 DATABASE_URL="postgresql://jobtracker_user:jobtracker_password@localhost:5433/jobtracker?schema=public"
 ```
 
-### 3. Start Database & Apply Schema
+### 3. Start the Application
 
-With the configuration in place, start the PostgreSQL database using Docker and apply the database schema with Prisma Migrate. Run these commands from the **project root**.
-
-```bash
-# Start the database container in the background
-docker-compose up -d
-
-# Apply the database schema
-(cd server && npx prisma migrate dev --name init)
-```
-
-### 4. Run the Application
-
-Finally, run the entire application (both frontend and backend) with a single command from the **project root**.
+With the setup complete, you can now start the entire application with a single command from the **project root**.
 
 ```bash
-npm run dev:full
+npm run start:app
 ```
 
-The servers will start concurrently. You can access the application at `http://localhost:5173` (or the port specified in the terminal).
+This command will automatically:
+
+1.  **Install all dependencies** for both the frontend and backend.
+2.  **Start the PostgreSQL database** using Docker.
+3.  **Set up the database schema** with Prisma.
+4.  **Start the backend server**, automatically finding a free port if the default is busy.
+5.  **Start the frontend server**, which waits for the backend to be ready before launching.
+
+The application will be available at the URL shown in the terminal (usually `http://localhost:5173` or the next available port).
 
 ### 5. Populate the Database (Optional)
 

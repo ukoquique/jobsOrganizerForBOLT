@@ -100,6 +100,13 @@ class ApiService {
       method: 'DELETE',
     });
   }
+
+  // Import endpoint
+  async importFromMarkdown(): Promise<{ count: number }> {
+    return this.request<{ count: number }>('/import/markdown', {
+      method: 'POST',
+    });
+  }
 }
 
 export const apiService = new ApiService();
