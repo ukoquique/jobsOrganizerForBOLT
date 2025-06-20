@@ -25,7 +25,23 @@ A full-stack application for managing job applications with a React frontend and
 - Prisma ORM
 - TypeScript
 
-## Getting Started
+## 🚀 One-Click Setup with bolt.new
+
+The easiest way to run this project is by using `bolt.new`. Simply click the button below to launch the application in a ready-to-code cloud environment.
+
+[![Run on bolt.new](https://bolt.new/button.svg)](https://bolt.new/repo/ukoquique/jobsOrganizerForBOLT)
+
+This will automatically:
+- Provision a cloud development environment.
+- Check for all necessary prerequisites (like Docker).
+- Start the database and all required services.
+- Install dependencies and launch the application.
+
+---
+
+## Manual Setup
+
+If you prefer to run the project on your local machine, follow the steps below.
 
 This project is configured to run with a single command, which handles everything from installing dependencies to starting the servers.
 

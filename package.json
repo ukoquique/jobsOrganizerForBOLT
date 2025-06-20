@@ -11,7 +11,7 @@
     "server:dev": "cd server && npm run dev",
     "server:setup": "cd server && npm install && npm run db:generate && npm run db:push && npm run db:seed",
     "dev:full": "npm run clean && concurrently \"npm run server:dev\" \"wait-on server/.tmp/.port && npm run dev\"",
-    "start:app": "npm install && (cd server && npm install && npm run db:setup) && npm run dev:full",
+    "start:app": "docker-compose up -d && npm install && (cd server && npm install && npm run db:setup) && npm run dev:full",
     "clean": "rm -rf server/.tmp"
   },
   "dependencies": {
